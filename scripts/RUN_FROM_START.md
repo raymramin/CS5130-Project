@@ -46,27 +46,36 @@ Uses fake probabilities and **real** Ollama for the report. No image file, no tr
 
 ---
 
-## Step 4: Run on your own x-ray image (with a trained model)
+## Step 4: Run Ollama with real model arrays (no hypothetical probabilities)
+
+Use the **vision model** (ray or sk) to get **real** label/probability arrays from your x-ray, then pass those arrays **directly to Ollama**. No mock or example probs.
 
 You need:
 - **An x-ray image file** (e.g. a `.png` or `.jpg`).
+- **Ollama** running (e.g. `ollama run llama3.1:8b`).
 - **A trained model** from this repo — either:
   - **Ray models**: trained with `models/ray.py` → weights in `models/resnet34_chexpert.pt` or `models/effb4_chexpert.pt`, or
   - **SK models**: weights in `sk/tuned_models/best_<model>_model.pth` (e.g. `best_resnet_model.pth`).
 
-**If you have Ray weights (e.g. `models/resnet34_chexpert.pt`):**
+**Run Ollama with real model arrays (no hypothetical probs):**
 
 ```cmd
 cd c:\Users\Ray\Desktop\CS5130\CS5130-Project\CS5130-Project
-python scripts/connect_models_to_llmollama.py --image "C:\path\to\your\xray.png" --backend ray --model resnet34 --output report.txt --explanation-out explanation.json
+python scripts/run_ollama_with_model_arrays.py --image "C:\path\to\your\xray.png" --backend ray --model resnet34 --output report.txt --explanation-out explanation.json
 ```
 
-Replace `C:\path\to\your\xray.png` with your actual image path. Use quotes if the path has spaces.
+This runs the vision model → gets real `labels` and `probs` → passes them to Ollama. Replace the image path with your x-ray file.
 
 **If you have SK weights (e.g. `sk/tuned_models/best_resnet_model.pth`):**
 
 ```cmd
-python scripts/connect_models_to_llmollama.py --image "C:\path\to\your\xray.png" --backend sk --model resnet --output report.txt --explanation-out explanation.json
+python scripts/run_ollama_with_model_arrays.py --image "C:\path\to\your\xray.png" --backend sk --model resnet --output report.txt
+```
+
+**Same flow via the connector (no `--dry-run`):**
+
+```cmd
+python scripts/connect_models_to_llmollama.py --image "C:\path\to\your\xray.png" --backend ray --model resnet34 --output report.txt --explanation-out explanation.json
 ```
 
 **If you don’t have any trained weights yet:**
@@ -94,7 +103,8 @@ python scripts/connect_models_to_llmollama.py --image "C:\path\to\your\xray.png"
 |-----------------------------|---------|
 | Dry run (no Ollama, no image) | `python scripts/run_llmollama_example.py --dry-run` |
 | Example + real Ollama       | `python scripts/run_llmollama_example.py` |
+| **Ollama with real model arrays** (no hypothetical probs) | `python scripts/run_ollama_with_model_arrays.py --image "path\to\xray.png" --backend ray --model resnet34 --output report.txt` |
 | Your image + Ray model      | `python scripts/connect_models_to_llmollama.py --image "path\to\xray.png" --backend ray --model resnet34 --output report.txt` |
-| Your image + SK model      | `python scripts/connect_models_to_llmollama.py --image "path\to\xray.png" --backend sk --model resnet --output report.txt` |
+| Your image + SK model      | `python scripts/run_ollama_with_model_arrays.py --image "path\to\xray.png" --backend sk --model resnet --output report.txt` |
 
 Run everything from: `c:\Users\Ray\Desktop\CS5130\CS5130-Project\CS5130-Project`.
