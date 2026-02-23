@@ -48,6 +48,7 @@ def main() -> None:
     image_path = Path(args.image).resolve()
     if not image_path.exists():
         print(f"Error: Image not found: {image_path}", file=sys.stderr)
+        print("Use a real path to your x-ray file (e.g. --image \"C:\\Users\\Ray\\Desktop\\my_xray.png\").", file=sys.stderr)
         sys.exit(1)
 
     # Do not use dry_run: we want real model arrays and real Ollama

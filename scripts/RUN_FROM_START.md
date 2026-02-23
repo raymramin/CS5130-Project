@@ -2,6 +2,8 @@
 
 Follow these steps in order. Run everything from the **project root** (`CS5130-Project`).
 
+**PowerShell:** Use `#` for comments (not `REM`). For Step 4 you must use a **real path** to an x-ray image file — the placeholder `C:\path\to\your\xray.png` does not exist; replace it with your actual file path.
+
 ---
 
 ## Step 1: Open terminal at project root
@@ -59,23 +61,31 @@ You need:
 
 **Run Ollama with real model arrays (no hypothetical probs):**
 
-```cmd
+Replace **YOUR_IMAGE_PATH** with the full path to your x-ray image (e.g. `C:\Users\Ray\Desktop\my_xray.png`). The path must point to a real `.png` or `.jpg` file.
+
+Ray model (needs `models/resnet34_chexpert.pt` or `effb4`):
+
+```powershell
 cd c:\Users\Ray\Desktop\CS5130\CS5130-Project\CS5130-Project
-python scripts/run_ollama_with_model_arrays.py --image "C:\path\to\your\xray.png" --backend ray --model resnet34 --output report.txt --explanation-out explanation.json
+python scripts/run_ollama_with_model_arrays.py --image "YOUR_IMAGE_PATH" --backend ray --model resnet34 --output report.txt --explanation-out explanation.json
 ```
 
-This runs the vision model → gets real `labels` and `probs` → passes them to Ollama. Replace the image path with your x-ray file.
+SK model (needs `sk/tuned_models/best_resnet_model.pth` etc.):
 
-**If you have SK weights (e.g. `sk/tuned_models/best_resnet_model.pth`):**
-
-```cmd
-python scripts/run_ollama_with_model_arrays.py --image "C:\path\to\your\xray.png" --backend sk --model resnet --output report.txt
+```powershell
+python scripts/run_ollama_with_model_arrays.py --image "YOUR_IMAGE_PATH" --backend sk --model resnet --output report.txt
 ```
 
-**Same flow via the connector (no `--dry-run`):**
+Same flow via the connector:
 
-```cmd
-python scripts/connect_models_to_llmollama.py --image "C:\path\to\your\xray.png" --backend ray --model resnet34 --output report.txt --explanation-out explanation.json
+```powershell
+python scripts/connect_models_to_llmollama.py --image "YOUR_IMAGE_PATH" --backend ray --model resnet34 --output report.txt --explanation-out explanation.json
+```
+
+**Example** (if your x-ray is on the Desktop):
+
+```powershell
+python scripts/run_ollama_with_model_arrays.py --image "C:\Users\Ray\Desktop\my_xray.png" --backend ray --model resnet34 --output report.txt --explanation-out explanation.json
 ```
 
 **If you don’t have any trained weights yet:**
